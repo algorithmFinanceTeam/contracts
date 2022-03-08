@@ -72,21 +72,17 @@ contract Funding {
     IERC20 public _usdt;
     // the certificate
     NRT public nrt;
-    mapping(address => uint256) private _holders;
 
     constructor(address usdtAddress) {
         _usdt = IERC20(usdtAddress);
-        nrt = new NRT("aMAG", 9);
+        nrt = new NRT("aALG", 9);
     }
 
     function invest() public payable {
         uint256 amount = msg.value;
         require(amount > 0, "You need to send at least some tokens");
         address from = msg.sender;
-
         _usdt.transferFrom(from, address(this), amount);
-        uint256 preBalance = _holders[from];
-        _holders[from] = preBalance + amount;
         nrt.issue(msg.sender, amount);
     }
 }
