@@ -12,7 +12,7 @@ contract StoreUSDT {
     }
 
 
-    function receiveUSDT(uint256 amount) public payable {
+    function receiveUSDT() public payable {
         uint256 amount = msg.value;
         require(amount > 0, "You need to send at least some tokens");
         address from = msg.sender;
