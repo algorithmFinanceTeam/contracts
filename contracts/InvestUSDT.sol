@@ -12,15 +12,19 @@ contract NRT is Ownable {
     uint256 private _outstandingSupply;
     uint256 private _decimals;
     string private _symbol;
+    IERC20 public _usdt;
+
 
     mapping(address => uint256) private _balances;
 
     event Issued(address account, uint256 amount);
     event Redeemed(address account, uint256 amount);
 
-    constructor(string memory __symbol, uint256 __decimals) {
+    constructor(address usdtAddress,string memory __symbol, uint256 __decimals) {
         _symbol = __symbol;
         _decimals = __decimals;
+        _usdt = IERC20(usdtAddress);
+
         _issuedSupply = 0;
         _outstandingSupply = 0;
     }
@@ -75,7 +79,7 @@ contract Funding {
 
     constructor(address usdtAddress) {
         _usdt = IERC20(usdtAddress);
-        nrt = new NRT("aALG", 9);
+        nrt = new NRT(usdtAddress,"aALG", 9);
     }
 
     function invest() public payable {
