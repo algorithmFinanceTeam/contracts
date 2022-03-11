@@ -94,6 +94,7 @@ contract Funding {
         require(amount > 0, "You need to send at least some tokens");
         address from = msg.sender;
         _usdt.transferFrom(from, address(this), amount);
+        
         nrt.issue(msg.sender, amount);
     }
 
