@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.10;
+pragma solidity ^0.8.4;
 
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
@@ -14,13 +14,16 @@ contract NRT is Ownable {
     string private _symbol;
     IERC20 public _usdt;
 
-
     mapping(address => uint256) private _balances;
 
     event Issued(address account, uint256 amount);
     event Redeemed(address account, uint256 amount);
 
-    constructor(address usdtAddress,string memory __symbol, uint256 __decimals) {
+    constructor(
+        address usdtAddress,
+        string memory __symbol,
+        uint256 __decimals
+    ) {
         _symbol = __symbol;
         _decimals = __decimals;
         _usdt = IERC20(usdtAddress);
@@ -55,6 +58,10 @@ contract NRT is Ownable {
         return _balances[account];
     }
 
+    function getBalance() private view returns (uint256) {
+        return _usdt.balanceOf(address(this));
+    }
+
     function symbol() public view returns (string memory) {
         return _symbol;
     }
@@ -79,14 +86,19 @@ contract Funding {
 
     constructor(address usdtAddress) {
         _usdt = IERC20(usdtAddress);
-        nrt = new NRT(usdtAddress,"aALG", 9);
+        nrt = new NRT(usdtAddress, "aALG", 9);
     }
 
-    function invest() public payable {
-        uint256 amount = msg.value;
+    function invest(uint256 amount) public payable {
+        // uint256 amount = msg.value;
         require(amount > 0, "You need to send at least some tokens");
         address from = msg.sender;
         _usdt.transferFrom(from, address(this), amount);
+        
         nrt.issue(msg.sender, amount);
+    }
+
+    function balanceOf(address account) public view returns (uint256) {
+        return nrt.balanceOf(account);
     }
 }
